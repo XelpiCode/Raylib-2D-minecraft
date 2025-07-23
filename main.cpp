@@ -22,9 +22,16 @@ bool AlreadyInVector(const std::vector<std::array<float, 2>> &placedBlock, std::
     return false;
 }
 
+void PlaceBlocks(const std::vector<std::array<float, 2>> &placedBlocks, const Texture2D &texture) {
+    for (auto & placedBlock : placedBlocks) {
+        DrawTextureOnSquareSimple(texture, placedBlock[0], placedBlock[1], 100, WHITE);
+    }
+}
+
+
 int main() {
-    constexpr int screenWidth = 1280;
-    constexpr int screenHeight = 720;
+    constexpr int screenWidth = 1920;
+    constexpr int screenHeight = 1080;
 
     InitWindow(screenWidth, screenHeight, "2D Minecraft");
 
@@ -45,13 +52,11 @@ int main() {
 
             if (!AlreadyInVector(placedBlocks, newBlockPosition)) {
                 placedBlocks.push_back(newBlockPosition);
-                std::cout << newBlockPosition[0] << " " << newBlockPosition[1] << std::endl;
+                std::cout << "placed block at " << newBlockPosition[0] << " " << newBlockPosition[1] << std::endl;
             }
         }
 
-        for (auto & placedBlock : placedBlocks) {
-            DrawTextureOnSquareSimple(grassBlock, placedBlock[0], placedBlock[1], 100, WHITE);
-        }
+        PlaceBlocks(placedBlocks, grassBlock);
 
         EndDrawing();
     }
