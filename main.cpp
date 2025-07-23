@@ -27,7 +27,7 @@ bool AlreadyInVector(const std::vector<BlockData> &placedBlock, BlockData positi
     return false;
 }
 
-void PlaceBlocks(const std::vector<BlockData> &placedBlocks) {
+void DrawBlocks(const std::vector<BlockData> &placedBlocks) {
     for (auto & placedBlock : placedBlocks) {
         DrawTextureOnSquareSimple(placedBlock.texture, placedBlock.x, placedBlock.y, 100, WHITE);
     }
@@ -52,15 +52,15 @@ int main() {
 
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
             Vector2 mousePos = GetMousePosition();
-            BlockData newBlockPosition = {roundf((mousePos.x - 50)/100)*100 , roundf((mousePos.y - 50)/100)*100, grassBlock};
+            BlockData newBlock = {roundf((mousePos.x - 50)/100)*100 , roundf((mousePos.y - 50)/100)*100, grassBlock};
 
-            if (!AlreadyInVector(placedBlocks, newBlockPosition)) {
-                placedBlocks.push_back(newBlockPosition);
-                std::cout << "placed block at " << newBlockPosition.x << " " << newBlockPosition.y << std::endl;
+            if (!AlreadyInVector(placedBlocks, newBlock)) {
+                placedBlocks.push_back(newBlock);
+                std::cout << "placed block at " << newBlock.x << " " << newBlock.y << std::endl;
             }
         }
 
-        PlaceBlocks(placedBlocks);
+        DrawBlocks(placedBlocks);
 
         EndDrawing();
     }
@@ -68,4 +68,3 @@ int main() {
     CloseWindow();
     return 0;
 }
-
