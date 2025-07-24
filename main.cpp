@@ -6,6 +6,27 @@
 #include <bits/ostream.tcc>
 #include <map>
 
+float SnapToGrid(float number) {
+    return roundf((number - 50)/100)*100;
+}
+
+std::map<std::string, Texture2D> textures;
+
+void loadBlockTextures() {
+    textures["grass_block"] = LoadTexture("C:/Users/ankit/CLionProjects/raylib game/Textures/Grass.png");
+    textures["dirt_block"] = LoadTexture("C:/Users/ankit/CLionProjects/raylib game/Textures/Dirt.png");
+    textures["cobblestone"] = LoadTexture("C:/Users/ankit/CLionProjects/raylib game/Textures/Cobblestone.png");
+    textures["oak_log"] = LoadTexture("C:/Users/ankit/CLionProjects/raylib game/Textures/Oak_Log.png");
+    textures["oak_plank"] = LoadTexture("C:/Users/ankit/CLionProjects/raylib game/Textures/Oak_Plank.png");
+    textures["stone"] = LoadTexture("C:/Users/ankit/CLionProjects/raylib game/Textures/Stone.png");
+}
+
+void unloadBlockTextures() {
+    for (const auto &pair : textures) {
+        UnloadTexture(pair.second);
+    }
+}
+
 struct BlockData {
     float x, y;
     Texture2D texture;
@@ -19,7 +40,7 @@ void DrawTextureOnSquareSimple(const Texture2D &texture, float posX, float posY,
     DrawTexturePro(texture, sourceRec, destRec, origin, 0.0f, tint);
 }
 
-bool AlreadyInVector(const std::vector<BlockData> &placedBlock, BlockData position) {
+bool AlreadyInVector(const std::vector<BlockData> &placedBlock, const BlockData &position) {
     for (auto & block : placedBlock) {
         if (block.x == position.x && block.y == position.y) {
             return true;
@@ -34,6 +55,24 @@ void DrawBlocks(const std::vector<BlockData> &placedBlocks) {
     }
 }
 
+int placeBlock(std::vector<BlockData>& placedBlocks, BlockData newBlock) {
+    if (!AlreadyInVector(placedBlocks, newBlock)) {
+        placedBlocks.push_back(newBlock);
+        std::cout << "placed block at " << newBlock.x << " " << newBlock.y << std::endl;
+        return 0;
+    }
+    return 1;
+}
+
+void ChangeBlockTexturesOption(std::vector<BlockData>& placedBlocks) {
+    float blocksShown = 0;
+    for (const auto &block : textures) {
+        BlockData newBlock = { SnapToGrid(650) + blocksShown , SnapToGrid(980), block.second};
+        blocksShown += 100;
+        placeBlock(placedBlocks, newBlock);
+    }
+}
+
 int main() {
     constexpr int screenWidth = 1920;
     constexpr int screenHeight = 1080;
@@ -41,9 +80,7 @@ int main() {
     InitWindow(screenWidth, screenHeight, "2D Minecraft");
 
     SetTargetFPS(165);
-
-    Texture2D grassBlock = LoadTexture("C:/Users/ankit/CLionProjects/raylib game/Textures/dirt.png");
-
+    loadBlockTextures();
     std::vector<BlockData> placedBlocks;
 
     while (!WindowShouldClose()) {
@@ -53,19 +90,17 @@ int main() {
 
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
             Vector2 mousePos = GetMousePosition();
-            BlockData newBlock = {roundf((mousePos.x - 50)/100)*100 , roundf((mousePos.y - 50)/100)*100, grassBlock};
-
-            if (!AlreadyInVector(placedBlocks, newBlock)) {
-                placedBlocks.push_back(newBlock);
-                std::cout << "placed block at " << newBlock.x << " " << newBlock.y << std::endl;
-            }
+            BlockData newBlock = {SnapToGrid(mousePos.x) , SnapToGrid(mousePos.y), textures["cobblestone"]};
+            placeBlock(placedBlocks, newBlock);
         }
 
+
         DrawBlocks(placedBlocks);
+        ChangeBlockTexturesOption(placedBlocks);
 
         EndDrawing();
     }
-    UnloadTexture(grassBlock);
+    unloadBlockTextures();
     CloseWindow();
     return 0;
 }
