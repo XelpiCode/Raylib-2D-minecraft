@@ -12,6 +12,7 @@ float SnapToGrid(float number) {
 
 std::map<std::string, Texture2D> textures;
 
+
 void loadBlockTextures() {
     textures["grass_block"] = LoadTexture("C:/Users/ankit/CLionProjects/raylib game/Textures/Grass.png");
     textures["dirt_block"] = LoadTexture("C:/Users/ankit/CLionProjects/raylib game/Textures/Dirt.png");
@@ -20,6 +21,7 @@ void loadBlockTextures() {
     textures["oak_plank"] = LoadTexture("C:/Users/ankit/CLionProjects/raylib game/Textures/Oak_Plank.png");
     textures["stone"] = LoadTexture("C:/Users/ankit/CLionProjects/raylib game/Textures/Stone.png");
     textures["leaves"] = LoadTexture("C:/Users/ankit/CLionProjects/raylib game/Textures/Leaves.png");
+    textures["glass"] = LoadTexture("C:/Users/ankit/CLionProjects/raylib game/Textures/Glass.png");
 }
 
 void unloadBlockTextures() {
@@ -97,6 +99,8 @@ int main() {
 
     InitWindow(screenWidth, screenHeight, "2D Minecraft");
 
+    Texture2D saveButton = LoadTexture("C:/Users/ankit/CLionProjects/raylib game/Textures/saveButton.png");
+
     SetTargetFPS(165);
     loadBlockTextures();
 
@@ -109,10 +113,16 @@ int main() {
 
         ClearBackground(BLUE);
 
+        DrawTextureOnSquareSimple(saveButton, 10, 10, 100, WHITE);
+
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
             Vector2 mousePos = GetMousePosition();
-            BlockData newBlock = {SnapToGrid(mousePos.x) , SnapToGrid(mousePos.y), currentTexture};
-            placeBlock(placedBlocks, newBlock);
+            if (SnapToGrid(mousePos.x) == 0 && SnapToGrid(mousePos.y) == 0) {
+                std::cout << "Save button clicked" << std::endl;
+            } else {
+                BlockData newBlock = {SnapToGrid(mousePos.x) , SnapToGrid(mousePos.y), currentTexture};
+                placeBlock(placedBlocks, newBlock);
+            }
         }
 
         if (IsMouseButtonPressed(MOUSE_MIDDLE_BUTTON)) {
@@ -124,7 +134,6 @@ int main() {
             Vector2 mousePos = GetMousePosition();
             DeleteBlock(placedBlocks, mousePos);
         }
-
 
         DrawBlocks(placedBlocks);
         BlockTexturesOption(placedBlocks);
