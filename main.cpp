@@ -73,6 +73,14 @@ void BlockTexturesOption(std::vector<BlockData>& placedBlocks) {
     }
 }
 
+void ChangeTexture(const std::vector<BlockData>& placedBlocks, Vector2 mousePos, Texture2D& currentTexture) {
+    for (const auto &block : placedBlocks) {
+        if (block.x == SnapToGrid(mousePos.x) && block.y == SnapToGrid(mousePos.y)) {
+            currentTexture = block.texture;
+        }
+    }
+}
+
 int main() {
     constexpr int screenWidth = 1920;
     constexpr int screenHeight = 1080;
@@ -99,11 +107,7 @@ int main() {
 
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
             Vector2 mousePos = GetMousePosition();
-            for (const auto &block : placedBlocks) {
-                if (block.x == SnapToGrid(mousePos.x) && block.y == SnapToGrid(mousePos.y)) {
-                    currentTexture = block.texture;
-                }
-            }
+            ChangeTexture(placedBlocks, mousePos, currentTexture);
         }
 
 
