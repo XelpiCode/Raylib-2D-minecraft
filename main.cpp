@@ -4,6 +4,7 @@
 #include <cmath>
 #include <iostream>
 #include <bits/ostream.tcc>
+#include <map>
 
 struct BlockData {
     float x, y;
@@ -41,7 +42,7 @@ int main() {
 
     SetTargetFPS(165);
 
-    Texture2D grassBlock = LoadTexture("C:/Users/ankit/CLionProjects/raylib game/Textures/grass.png");
+    Texture2D grassBlock = LoadTexture("C:/Users/ankit/CLionProjects/raylib game/Textures/dirt.png");
 
     std::vector<BlockData> placedBlocks;
 
