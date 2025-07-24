@@ -19,6 +19,7 @@ void loadBlockTextures() {
     textures["oak_log"] = LoadTexture("C:/Users/ankit/CLionProjects/raylib game/Textures/Oak_Log.png");
     textures["oak_plank"] = LoadTexture("C:/Users/ankit/CLionProjects/raylib game/Textures/Oak_Plank.png");
     textures["stone"] = LoadTexture("C:/Users/ankit/CLionProjects/raylib game/Textures/Stone.png");
+    textures["leaves"] = LoadTexture("C:/Users/ankit/CLionProjects/raylib game/Textures/Leaves.png");
 }
 
 void unloadBlockTextures() {
@@ -81,6 +82,15 @@ void ChangeTexture(const std::vector<BlockData>& placedBlocks, Vector2 mousePos,
     }
 }
 
+void DeleteBlock(std::vector<BlockData>& placedBlocks, Vector2 mousePos) {
+    for (auto it = placedBlocks.begin(); it != placedBlocks.end(); ++it) {
+        if (it->x == SnapToGrid(mousePos.x) && it->y == SnapToGrid(mousePos.y)) {
+            placedBlocks.erase(it);
+            break;
+        }
+    }
+}
+
 int main() {
     constexpr int screenWidth = 1920;
     constexpr int screenHeight = 1080;
@@ -105,9 +115,14 @@ int main() {
             placeBlock(placedBlocks, newBlock);
         }
 
-        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+        if (IsMouseButtonPressed(MOUSE_MIDDLE_BUTTON)) {
             Vector2 mousePos = GetMousePosition();
             ChangeTexture(placedBlocks, mousePos, currentTexture);
+        }
+
+        if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
+            Vector2 mousePos = GetMousePosition();
+            DeleteBlock(placedBlocks, mousePos);
         }
 
 
