@@ -64,7 +64,7 @@ int placeBlock(std::vector<BlockData>& placedBlocks, BlockData newBlock) {
     return 1;
 }
 
-void ChangeBlockTexturesOption(std::vector<BlockData>& placedBlocks) {
+void BlockTexturesOption(std::vector<BlockData>& placedBlocks) {
     float blocksShown = 0;
     for (const auto &block : textures) {
         BlockData newBlock = { SnapToGrid(650) + blocksShown , SnapToGrid(980), block.second};
@@ -81,6 +81,9 @@ int main() {
 
     SetTargetFPS(165);
     loadBlockTextures();
+
+     Texture2D currentTexture = textures["dirt_block"];
+
     std::vector<BlockData> placedBlocks;
 
     while (!WindowShouldClose()) {
@@ -90,13 +93,22 @@ int main() {
 
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
             Vector2 mousePos = GetMousePosition();
-            BlockData newBlock = {SnapToGrid(mousePos.x) , SnapToGrid(mousePos.y), textures["cobblestone"]};
+            BlockData newBlock = {SnapToGrid(mousePos.x) , SnapToGrid(mousePos.y), currentTexture};
             placeBlock(placedBlocks, newBlock);
+        }
+
+        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+            Vector2 mousePos = GetMousePosition();
+            for (const auto &block : placedBlocks) {
+                if (block.x == SnapToGrid(mousePos.x) && block.y == SnapToGrid(mousePos.y)) {
+                    currentTexture = block.texture;
+                }
+            }
         }
 
 
         DrawBlocks(placedBlocks);
-        ChangeBlockTexturesOption(placedBlocks);
+        BlockTexturesOption(placedBlocks);
 
         EndDrawing();
     }
